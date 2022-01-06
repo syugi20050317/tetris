@@ -6,39 +6,8 @@
 #include "iostream"
 int nowtime0 = 0;
 int nowtime1 = 0;
-void OutputLogToCChokka(std::wstring txt)
-{
 
-	//FILE* fp = NULL;
-	auto t = time(nullptr);
-	auto tmv = tm();
-	auto error = localtime_s(&tmv, &t); // ローカル時間(タイムゾーンに合わせた時間)を取得
-
-	WCHAR buf[256] = { 0 };
-	wcsftime(buf, 256, L"%Y/%m/%d %H:%M:%S ", &tmv);
-
-	// 現在のスレッドIDを出力
-	auto thId = std::this_thread::get_id();
-
-	// ログ出力
-	std::wstring logtxt = buf + txt;
-
-
-	// ファイルを開く(なければ作成)
-	// C直下のファイルに書くにはexe実行時に管理者権限にする必要アリ
-	std::wofstream ofs(L"D:\\mylog.log", std::ios::app);
-	if (!ofs)
-	{
-		return;
-	}
-	// 現在時刻とスレッドIDを付けたログをファイルに書き込み
-	ofs << thId << L"  " << logtxt.c_str() << std::endl;
-	std::wcout << thId << L"  " << logtxt.c_str() << std::endl;
-	// ファイル閉じる
-	ofs.close();
-}
 void gamemain() {
-	OutputLogToCChokka(L"gamemain\r\n");
 	//初期化
 	int blockplace[10][20];
 	for (int i = 0; i < 10; i++) {
@@ -67,7 +36,6 @@ void gamemain() {
 	}
 }
 void gameover(int nowboard[10][20]) {
-	OutputLogToCChokka(L"gameover\r\n");
 	for (int i = 0; i < 1; i++) {
 		for (int j = 0; j < 10; j++) {
 			if (nowboard[j][i] != 0) {
@@ -83,7 +51,6 @@ void gameover(int nowboard[10][20]) {
 	}
 }
 void deleteline(int nowboard[10][20]) {
-	OutputLogToCChokka(L"deleteline\r\n");
 	int count = 0;
 	for (int i = 0; i < 20; i++) {
 		count = 0;
@@ -106,7 +73,6 @@ void deleteline(int nowboard[10][20]) {
 }
 int stop = 0;
 void control(int nowboard[10][20]) {
-	OutputLogToCChokka(L"control\r\n");
 	int restore = 0;
 	int restore_board[10][20];
 	if (CheckHitKey(KEY_INPUT_A) != 0) {
@@ -240,7 +206,7 @@ void control(int nowboard[10][20]) {
 		if (clock() - nowtime1 > 125) {
 			checkdrop(nowboard);
 			for (int i = 0; i < 10; i++) {
-				for (int j = 19; j >= 0; j--) {
+				for (int j = 18; j >= 0; j--) {
 					if (nowboard[i][j] > 10) {
 						nowboard[i][j + 1] = nowboard[i][j];
 						nowboard[i][j] = 0;
@@ -257,11 +223,11 @@ void control(int nowboard[10][20]) {
 				for (int j = 0; j < 20; j++) {
 					while (1) {
 						escape = checkdrop(nowboard);
-						for (int i = 0; i < 10; i++) {
-							for (int j = 19; j >= 0; j--) {
-								if (nowboard[i][j] > 10) {
-									nowboard[i][j + 1] = nowboard[i][j];
-									nowboard[i][j] = 0;
+						for (int k = 0; k < 10; k++) {
+							for (int l = 18; l >= 0; l--) {
+								if (nowboard[k][l] > 10) {
+									nowboard[k][l + 1] = nowboard[k][l];
+									nowboard[k][l] = 0;
 									nowtime1 = clock();
 								}
 							}
@@ -277,7 +243,6 @@ void control(int nowboard[10][20]) {
 	}
 }
 void drawingboard() {
-	OutputLogToCChokka(L"drawingboard\r\n");
 	DrawBox(0, 0, 500, 1000, GetColor(135, 135, 135), TRUE);
 	for (int i = 0; i < 11; i++) {
 		DrawLine(50 * i, 0, 50 * i, 1000, GetColor(255, 255, 255), TRUE);
@@ -288,7 +253,6 @@ void drawingboard() {
 }
 
 int drawingbloack(int nowboard[10][20]) {
-	OutputLogToCChokka(L"drawingbloack\r\n");
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 20; j++) {
 			switch (nowboard[i][j])
@@ -347,10 +311,9 @@ int drawingbloack(int nowboard[10][20]) {
 }
 
 int dropblock(int nowboard[10][20]) {
-	OutputLogToCChokka(L"dropblock\r\n");
 	checkdrop(nowboard);
 	for (int i = 0; i < 10; i++) {
-		for (int j = 19; j >= 0; j--) {
+		for (int j = 18; j >= 0; j--) {
 			if (nowboard[i][j] > 10) {
 				nowboard[i][j + 1] = nowboard[i][j];
 				nowboard[i][j] = 0;
@@ -360,7 +323,6 @@ int dropblock(int nowboard[10][20]) {
 	return 0;
 }
 int checkdrop(int nowboard[10][20]) {
-	OutputLogToCChokka(L"checkdrop\r\n");
 	int flag = 0;
 	for (int i = 0; i < 10; i++) {
 		for (int j = 18; j >= 0; j--) {
@@ -395,7 +357,6 @@ int checkdrop(int nowboard[10][20]) {
 	return 1;
 }
 void makeblock(int nowboard[10][20]) {
-	OutputLogToCChokka(L"makeblock\r\n");
 	int breaks = 0;
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 20; j++) {
